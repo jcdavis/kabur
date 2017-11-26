@@ -3,6 +3,7 @@ package is.jcdav.kabur;
 import is.jcdav.kabur.nodes.Node;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Field;
 import java.util.Random;
 
 public class ResultRunner {
@@ -74,7 +75,28 @@ public class ResultRunner {
         }
     }
 
-    public void run(int runsToCompile) {
+    private static final Field form;
+    private static final Field isCompiled;
+    static {
+        try {
+            form = MethodHandle.class.getDeclaredField("form");
+            form.setAccessible(true);
+            isCompiled = Class.forName("java.lang.invoke.LambdaForm").getDeclaredField("isCompiled");
+            isCompiled.setAccessible(true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static boolean isCompiled(MethodHandle mh) {
+        try {
+            Object lf = form.get(mh);
+            return (boolean) isCompiled.get(lf);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void run() {
         Result[][] results = new Result[params.length][params.length];
         System.out.println("Testing " + root.toString());
         MethodHandle mh = root.compile();
@@ -93,15 +115,11 @@ public class ResultRunner {
             }
         }
 
-        for (int i = 0; i < runsToCompile; i++) {
-            bar += Result.getResult(mh, goodLeft, goodRight).result;
+        while (!isCompiled(mh)) {
+            for (int i = 0; i < 100; i++) {
+                bar += Result.getResult(mh, goodLeft, goodRight).result;
+            }
         }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-
-        }
-        System.out.println("Compiled?");
 
         for(int i = 0; i < params.length; i++) {
             for (int j = 0; j < params.length; j++) {
