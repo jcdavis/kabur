@@ -115,10 +115,13 @@ public class ResultRunner {
             }
         }
 
-        while (!isCompiled(mh)) {
-            for (int i = 0; i < 100; i++) {
-                bar += Result.getResult(mh, goodLeft, goodRight).result;
-            }
+        for (int i = 0; i < 50000; i++) {
+            bar += Result.getResult(mh, goodLeft, goodRight).result;
+        }
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
         }
 
         for(int i = 0; i < params.length; i++) {

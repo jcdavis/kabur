@@ -17,15 +17,6 @@ public abstract class Node {
     public static Node rightParam() {
         return new RightParamNode();
     }
-    public static Node negate(Node child) {
-        return new NegateNode(child);
-    }
-    public static Node not(Node child) {
-        return new NotNode(child);
-    }
-    public static Node add(Node a, Node b) {
-        return new AddNode(a, b);
-    }
 
     public static Node randomUnary(Random r, Node child) {
         if (r.nextInt(2) == 0)
@@ -45,7 +36,7 @@ public abstract class Node {
             case 7: return new ShlNode(left, right);
             case 8: return new AShrNode(left, right);
             case 9: return new LShrNode(left, right);
-            default: throw new RuntimeException("Should'nt reach");
+            default: throw new RuntimeException("Shouldn't reach");
         }
     }
 }
