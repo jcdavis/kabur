@@ -264,7 +264,7 @@ class XorNode extends BinaryNode {
     }
 
     public static int xor(int a, int b) {
-        return a&b;
+        return a^b;
     }
     @Override
     protected String implName() {
