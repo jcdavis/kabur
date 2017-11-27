@@ -39,6 +39,18 @@ public abstract class Node {
             default: throw new RuntimeException("Shouldn't reach");
         }
     }
+
+    public static Node randomConditional(Random r, Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        switch (r.nextInt(6)) {
+            case 0: return new EqsNode(trueNode, falseNode, condLeft, condRight);
+            case 1: return new NeqNode(trueNode, falseNode, condLeft, condRight);
+            case 2: return new LtNode(trueNode, falseNode, condLeft, condRight);
+            case 3: return new LteNode(trueNode, falseNode, condLeft, condRight);
+            case 4: return new GtNode(trueNode, falseNode, condLeft, condRight);
+            case 5: return new GteNode(trueNode, falseNode, condLeft, condRight);
+            default: throw new RuntimeException("Shouldn't reach");
+        }
+    }
 }
 
 class ConstantNode extends Node {
@@ -142,9 +154,11 @@ abstract class BinaryNode extends Node {
         this.right = right;
     }
 
+    protected MethodType implType() { return MethodType.methodType(int.class, int.class, int.class); }
+
     public MethodHandle compile() {
         try {
-            MethodHandle fn = MethodHandles.lookup().findStatic(this.getClass(), implName(), MethodType.methodType(int.class, int.class, int.class));
+            MethodHandle fn = MethodHandles.lookup().findStatic(this.getClass(), implName(), implType());
             // (leftHandle, left, right) -> fn(leftHandle, rightHandle)
             MethodHandle part = MethodHandles.collectArguments(fn, 1, right.compile());
             return MethodHandles.foldArguments(part, left.compile());
@@ -298,4 +312,88 @@ class LShrNode extends BinaryNode {
     protected String implName() {
         return "lshr";
     }
+}
+
+abstract class ConditionalNode extends BinaryNode {
+    protected final Node trueNode;
+    protected final Node falseNode;
+
+
+    public ConditionalNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(condLeft, condRight);
+        this.trueNode = trueNode;
+        this.falseNode = falseNode;
+    }
+
+    @Override
+    protected MethodType implType() { return MethodType.methodType(boolean.class, int.class, int.class); }
+
+    @Override
+    public MethodHandle compile() {
+        try {
+            MethodHandle conditional = super.compile();
+            return MethodHandles.guardWithTest(conditional, trueNode.compile(), falseNode.compile());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "if(" + super.toString() + "," + trueNode.toString() + "," + falseNode.toString() + ")";
+    }
+}
+
+class EqsNode extends ConditionalNode {
+    public EqsNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean eqs(int a, int b) { return a == b; }
+    @Override
+    protected String implName() { return "eqs"; }
+}
+
+class NeqNode extends ConditionalNode {
+    public NeqNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean neq(int a, int b) { return a != b; }
+    @Override
+    protected String implName() { return "neq"; }
+}
+
+class LtNode extends ConditionalNode {
+    public LtNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean lt(int a, int b) { return a < b; }
+    @Override
+    protected String implName() { return "lt"; }
+}
+
+class LteNode extends ConditionalNode {
+    public LteNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean lte(int a, int b) { return a <= b; }
+    @Override
+    protected String implName() { return "lte"; }
+}
+
+class GtNode extends ConditionalNode {
+    public GtNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean gt(int a, int b) { return a > b; }
+    @Override
+    protected String implName() { return "gt"; }
+}
+
+class GteNode extends ConditionalNode {
+    public GteNode(Node trueNode, Node falseNode, Node condLeft, Node condRight) {
+        super(trueNode, falseNode, condLeft, condRight);
+    }
+    public static boolean gte(int a, int b) { return a >= b; }
+    @Override
+    protected String implName() { return "gte"; }
 }

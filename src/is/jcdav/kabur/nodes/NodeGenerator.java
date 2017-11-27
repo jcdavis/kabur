@@ -16,10 +16,16 @@ public class NodeGenerator {
             }
         }
         //Arbitary
-        if (r.nextInt(100) < 20) {
-            return Node.randomUnary(r, generate(r, level + 1));
+        if (r.nextInt(100) < 10) {
+            // To make conditionals more meaningful, prefer simpler expressions and always check param
+            Node param = r.nextInt(2) == 0? Node.leftParam() : Node.rightParam();
+            return Node.randomConditional(r, generate(r, level + 1), generate(r, level + 1), generate(r, level + 3), param);
         } else {
-            return Node.randomBinary(r, generate(r, level + 1), generate(r, level + 1));
+            if (r.nextInt(100) < 20) {
+                return Node.randomUnary(r, generate(r, level + 1));
+            } else {
+                return Node.randomBinary(r, generate(r, level + 1), generate(r, level + 1));
+            }
         }
     }
 }
