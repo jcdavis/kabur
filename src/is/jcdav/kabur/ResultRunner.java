@@ -3,7 +3,6 @@ package is.jcdav.kabur;
 import is.jcdav.kabur.nodes.Node;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Field;
 import java.util.Random;
 
 public class ResultRunner {
@@ -72,27 +71,6 @@ public class ResultRunner {
             } else {
                 return "Result(" + result + ")";
             }
-        }
-    }
-
-    private static final Field form;
-    private static final Field isCompiled;
-    static {
-        try {
-            form = MethodHandle.class.getDeclaredField("form");
-            form.setAccessible(true);
-            isCompiled = Class.forName("java.lang.invoke.LambdaForm").getDeclaredField("isCompiled");
-            isCompiled.setAccessible(true);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private static boolean isCompiled(MethodHandle mh) {
-        try {
-            Object lf = form.get(mh);
-            return (boolean) isCompiled.get(lf);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 
