@@ -340,7 +340,7 @@ abstract class ConditionalNode extends BinaryNode {
 
     @Override
     public String toString() {
-        return "if(" + super.toString() + "," + trueNode.toString() + "," + falseNode.toString() + ")";
+        return "cond(" + super.toString() + "," + trueNode.toString() + "," + falseNode.toString() + ")";
     }
 }
 
