@@ -8,7 +8,10 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) throws Throwable {
-        Random r = new Random();
+        // Roughly what the default Random constructor will generate
+        long seed = System.nanoTime() ^ (8682522807148012L * 181783497276652981L);
+        System.out.println("Using Seed " + seed);
+        Random r = new Random(seed);
         while(true) {
             Node generated = NodeGenerator.generate(r);
             ResultRunner runner = new ResultRunner(r, generated, 5);
