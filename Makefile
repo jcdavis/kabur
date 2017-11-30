@@ -21,5 +21,5 @@ run: compile
 	-XX:CompileThreshold=1000 \
 	-Djava.lang.invoke.MethodHandle.DONT_INLINE_THRESHOLD=0 \
 	-cp out \
-	is.jcdav.kabur.Main
+	is.jcdav.kabur.Kabur
 	
