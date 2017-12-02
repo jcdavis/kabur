@@ -19,7 +19,7 @@ public abstract class Node {
     }
 
     public static Node randomUnary(Random r, Node child) {
-        if (r.nextInt(2) == 0)
+        if (r.nextBoolean())
             return new NegateNode(child);
         else
             return new NotNode(child);
