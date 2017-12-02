@@ -121,26 +121,18 @@ class NotNode extends UnaryNode {
     public NotNode(Node child) {
         super(child);
     }
-    public static int not(int p) {
-        return ~p;
-    }
+    public static int not(int p) { return ~p; }
     @Override
-    protected String implName() {
-        return "not";
-    }
+    protected String implName() { return "not"; }
 }
 
 class NegateNode extends UnaryNode {
     public NegateNode(Node child) {
         super(child);
     }
-    public static int negate(int p) {
-        return -p;
-    }
+    public static int negate(int p) { return -p; }
     @Override
-    protected String implName() {
-        return "negate";
-    }
+    protected String implName() { return "negate"; }
 }
 
 abstract class BinaryNode extends Node {
@@ -177,141 +169,90 @@ class AddNode extends BinaryNode {
     public AddNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int add(int a, int b) {
-        return a+b;
-    }
-
+    public static int add(int a, int b) { return a+b; }
     @Override
-    protected String implName() {
-        return "add";
-    }
+    protected String implName() { return "add"; }
 }
 
 class SubNode extends BinaryNode {
     public SubNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int sub(int a, int b) {
-        return a-b;
-    }
+    public static int sub(int a, int b) { return a-b; }
     @Override
-    protected String implName() {
-        return "sub";
-    }
+    protected String implName() { return "sub"; }
 }
 
 class MulNode extends BinaryNode {
     public MulNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int mul(int a, int b) {
-        return a*b;
-    }
+    public static int mul(int a, int b) { return a*b; }
     @Override
-    protected String implName() {
-        return "mul";
-    }
+    protected String implName() { return "mul"; }
 }
 
 class DivNode extends BinaryNode {
     public DivNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int div(int a, int b) {
-        return a/b;
-    }
+    public static int div(int a, int b) { return a/b; }
     @Override
-    protected String implName() {
-        return "div";
-    }
+    protected String implName() { return "div"; }
 }
 
 class AndNode extends BinaryNode {
     public AndNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int and(int a, int b) {
-        return a&b;
-    }
+    public static int and(int a, int b) { return a&b; }
     @Override
-    protected String implName() {
-        return "and";
-    }
+    protected String implName() { return "and"; }
 }
 
 class OrNode extends BinaryNode {
     public OrNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int or(int a, int b) {
-        return a|b;
-    }
+    public static int or(int a, int b) { return a|b; }
     @Override
-    protected String implName() {
-        return "or";
-    }
+    protected String implName() { return "or"; }
 }
 
 class XorNode extends BinaryNode {
     public XorNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int xor(int a, int b) {
-        return a^b;
-    }
+    public static int xor(int a, int b) { return a^b; }
     @Override
-    protected String implName() {
-        return "xor";
-    }
+    protected String implName() { return "xor"; }
 }
 
 class ShlNode extends BinaryNode {
     public ShlNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int shl(int a, int b) {
-        return a<<b;
-    }
+    public static int shl(int a, int b) { return a<<b; }
     @Override
-    protected String implName() {
-        return "shl";
-    }
+    protected String implName() { return "shl"; }
 }
 
 class AShrNode extends BinaryNode {
     public AShrNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int ashr(int a, int b) {
-        return a>>b;
-    }
+    public static int ashr(int a, int b) { return a>>b; }
     @Override
-    protected String implName() {
-        return "ashr";
-    }
+    protected String implName() { return "ashr"; }
 }
 
 class LShrNode extends BinaryNode {
     public LShrNode(Node left, Node right) {
         super(left, right);
     }
-
-    public static int lshr(int a, int b) {
-        return a>>>b;
-    }
+    public static int lshr(int a, int b) { return a>>>b; }
     @Override
-    protected String implName() {
-        return "lshr";
-    }
+    protected String implName() { return "lshr"; }
 }
 
 abstract class ConditionalNode extends BinaryNode {
