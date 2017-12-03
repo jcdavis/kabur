@@ -55,56 +55,51 @@ public abstract class Node {
 
 class ConstantNode extends Node {
     private final int value;
-
     public ConstantNode(int value) {
         this.value = value;
     }
-
     @Override
     public MethodHandle compile() {
+        // (left, right) -> c
         return MethodHandles.dropArguments(MethodHandles.constant(int.class, value), 0, int.class, int.class);
     }
     @Override
-    public String toString() {
-        return "" + value;
-    }
+    public String toString() { return "" + value; }
 }
 
 class LeftParamNode extends Node {
     @Override
     public MethodHandle compile() {
+        // (left, right) -> left
         return MethodHandles.dropArguments(MethodHandles.identity(int.class), 1, int.class);
     }
     @Override
-    public String toString() {
-        return "left";
-    }
+    public String toString() { return "left"; }
 }
 
 class RightParamNode extends Node {
     @Override
     public MethodHandle compile() {
+        // (left, right) -> right
         return MethodHandles.dropArguments(MethodHandles.identity(int.class), 0, int.class);
     }
     @Override
-    public String toString() {
-        return "right";
-    }
+    public String toString() { return "right"; }
 
 }
 
 abstract class UnaryNode extends Node {
     protected final Node child;
 
-    protected abstract String implName();
-
     public UnaryNode(Node child) {
         this.child = child;
     }
 
+    protected abstract String implName();
     public MethodHandle compile() {
         try {
             MethodHandle fn = MethodHandles.lookup().findStatic(this.getClass(), implName(), MethodType.methodType(int.class, int.class));
+            // (left, right) -> fn(child(left, right))
             return MethodHandles.filterReturnValue(child.compile(), fn);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -151,8 +146,9 @@ abstract class BinaryNode extends Node {
     public MethodHandle compile() {
         try {
             MethodHandle fn = MethodHandles.lookup().findStatic(this.getClass(), implName(), implType());
-            // (leftHandle, left, right) -> fn(leftHandle, rightHandle)
+            // (leftResult, left, right) -> fn(leftResult, rightHandle(left, right))
             MethodHandle part = MethodHandles.collectArguments(fn, 1, right.compile());
+            // (left, right) -> part(leftHandle(left, right), left, right)
             return MethodHandles.foldArguments(part, left.compile());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -272,7 +268,9 @@ abstract class ConditionalNode extends BinaryNode {
     @Override
     public MethodHandle compile() {
         try {
+            // (left, right) -> fn(condLeft(left, right), condRight(left, right))
             MethodHandle conditional = super.compile();
+            // (left, right) -> conditional(left, right) ? trueNode(left, right) : falseNode(left, right)
             return MethodHandles.guardWithTest(conditional, trueNode.compile(), falseNode.compile());
         } catch (Exception e) {
             throw new RuntimeException(e);
