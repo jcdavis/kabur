@@ -36,6 +36,7 @@ public abstract class Node {
             case 7: return new ShlNode(left, right);
             case 8: return new AShrNode(left, right);
             case 9: return new LShrNode(left, right);
+            default: throw new RuntimeException("Shouldn't reach");
         }
     }
 
@@ -47,6 +48,7 @@ public abstract class Node {
             case 3: return new LteNode(trueNode, falseNode, condLeft, condRight);
             case 4: return new GtNode(trueNode, falseNode, condLeft, condRight);
             case 5: return new GteNode(trueNode, falseNode, condLeft, condRight);
+            default: throw new RuntimeException("Shouldn't reach");
         }
     }
 }
